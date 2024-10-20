@@ -25,30 +25,43 @@ class CCA:
             if len(class_samples) > 0:
                 cover_centers = self.select_centers(class_samples)
                 for center in cover_centers:
-                    radius = self.compute_radius_max(center,class_samples)
+                    radius = self.compute_radius_mid(center,class_samples, dif_class_samples)
                     # radius = self.compute_radius_max(center,class_samples)
                     # radius = self.compute_radius_min(center,class_samples)
                     self.covers.append((center, radius, cls))
 
     # 随机选择覆盖中心
     def select_centers(self, class_samples):
-        indices = np.random.choice(class_samples.shape[0], size=5, replace=False)
+        uncovered_samples = []
+        for sample in class_samples:
+            covered = False
+            for center,radius,cls in self.covers:
+                if(np.linalg.norm(sample - center) <= radius):
+                    covered = True
+                    break
+            if not covered:
+                uncovered_samples.append(sample)
+        indices = np.random.choice(len(uncovered_samples), size=5, replace=False)
         return class_samples[indices]
 
     # 计算半径，这里简化为最大距离到中心的距离
-    def compute_radius_max(self, center, class_samples):
-        distances = cdist(class_samples, [center], 'euclidean').flatten()
+    def compute_radius_max(self, center, samples):
+        distances = cdist(samples, [center], 'euclidean').flatten()
         return np.max(distances)
 
-    def compute_radius_min(self, center, class_samples):
-        # 计算中心点到同类样本的最小距离
-        distances = cdist(class_samples, [center], 'euclidean').flatten()
-        # 最小距离作为半径
+    def compute_radius_min(self, center, samples):
+        # 计算中心点到所有样本的距离
+        distances = cdist(samples, [center], 'euclidean').flatten()
+        # 取最小距离作为半径
         return np.min(distances)
 
-    def compute_radius_mid(self, center, class_samples):
-        distances_max = self.compute_radius_max(center, class_samples)
-        distances_min = self.compute_radius_min(center, class_samples)
+    def compute_radius_mid(self, center, class_samples, dif_class_samples):
+        # 找到异类样本的最小值 d1
+        distances_min = self.compute_radius_min(center, dif_class_samples)
+        # 所有同类样本的距离
+        distances = cdist(class_samples, [center], 'euclidean').flatten()
+        # 在所有同类样本中，找到所有距离小于d1的样本，从中选取距离最大的
+        distances_max = np.max(distances[distances <= distances_min])
 
         return (distances_max + distances_min) / 2
 
