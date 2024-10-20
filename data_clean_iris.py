@@ -1,9 +1,14 @@
-from sklearn.datasets import load_iris
+from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import KFold
+from sklearn.datasets import load_iris
+
+
+
 import pandas as pd
 import numpy as np
 
-# import iris dataset 数据 和 标签
+# load iris dataset 数据 和 标签
 iris = load_iris()
 X,y = iris.data, iris.target
 
@@ -41,5 +46,9 @@ X,y = iris.data, iris.target
 # # 如果需要，转换数据类型
 # # df['column_name'] = df['column_name'].astype('float')
 
+# Min-Max归一化
 scaler = MinMaxScaler()
 scaler_data = scaler.fit_transform(X)
+
+# 十折交叉器
+kf = KFold(n_splits=10, random_state=42, shuffle=True)

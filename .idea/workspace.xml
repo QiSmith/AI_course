@@ -5,14 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe020169-3169-46d7-b937-428c1a29c060" name="更改" comment="prepare dataset">
-      <change afterPath="$PROJECT_DIR$/data_clean_iris.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dataset/iris/Index" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dataset/iris/bezdekIris.data" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dataset/iris/iris.data" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dataset/iris/iris.names" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CCA/CCA.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CCA/iris_cca.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CCA/readme.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_clean.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_clean_iris.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_clean_iris.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,8 +64,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.CCA.executor": "Run",
     "Python.data_clean.executor": "Run",
     "Python.data_clean_iris.executor": "Run",
+    "Python.iris_cca.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "last_opened_file_path": "E:/pycharmproject/AI/dataset/iris",
@@ -77,7 +76,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "settings.editor.selected.configurable": "advanced.settings",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -111,7 +110,7 @@
       <workItem from="1729407594263" duration="8000" />
       <workItem from="1729407644849" duration="15000" />
       <workItem from="1729407903526" duration="89000" />
-      <workItem from="1729408064999" duration="5664000" />
+      <workItem from="1729408064999" duration="16380000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -129,7 +128,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729411607333</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="prepare dataset">
+      <option name="closed" value="true" />
+      <created>1729413919373</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1729413919373</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -141,7 +148,9 @@
     <option name="LAST_COMMIT_MESSAGE" value="prepare dataset" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/AI$iris_cca.coverage" NAME="iris_cca 覆盖结果" MODIFIED="1729424254562" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CCA" />
     <SUITE FILE_PATH="coverage/AI$data_clean.coverage" NAME="data_clean 覆盖结果" MODIFIED="1729413098164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/AI$data_clean_iris.coverage" NAME="data_clean_iris 覆盖结果" MODIFIED="1729413773872" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/AI$CCA.coverage" NAME="CCA 覆盖结果" MODIFIED="1729421001665" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CCA" />
+    <SUITE FILE_PATH="coverage/AI$data_clean_iris.coverage" NAME="data_clean_iris 覆盖结果" MODIFIED="1729413869894" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
