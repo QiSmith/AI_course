@@ -3,11 +3,8 @@ from scipy.spatial.distance import cdist
 import numpy as np
 
 class CCA:
-    def __init__(self,radius=None):
-        self.radius = radius
-        self.covers = []    # center, radius, class
-        self.X_train = []
-        self.y_train = []
+    def __init__(self):
+        self.covers = []    # [center, radius, class]
         self.classes = []
         self.num_unknown = [0, 0]
         self.num_known = [0, 0]
@@ -22,13 +19,14 @@ class CCA:
 
             # 检查是否有未被覆盖的同类样本
             uncovered_class_samples = class_samples.copy()
+            print(f'未覆盖样本集:{uncovered_class_samples.shape}')
 
             while len(uncovered_class_samples) > 0:
-
+                print(f'未覆盖样本集长度:{len(uncovered_class_samples)},样本集类别:{cls}')
                 # 随机选择一个未被覆盖的样本作为覆盖中心
                 center = self.select_center(uncovered_class_samples)
 
-                radius = self.compute_radius_mid(center, [center], dif_class_samples)
+                radius = self.compute_radius_mid(center, class_samples, dif_class_samples)
                 self.covers.append((center, radius, cls))
                 # 检查是否有未被覆盖的同类样本
                 uncovered_class_samples = [sample for sample in class_samples
@@ -41,33 +39,35 @@ class CCA:
 
         return class_samples[indices[0]]
 
-    def is_covered(self, center):
+    def is_covered(self, sample):
         # 检查中心点是否被任何覆盖集覆盖
         for cover in self.covers:
-            distance = np.linalg.norm(center - cover[0])
+            distance = np.linalg.norm(sample - cover[0])
             if distance <= cover[1]:
                 return True
         return False
 
     # 计算半径，这里简化为最大距离到中心的距离
     def compute_radius_max(self, center, samples):
-        distances = cdist(samples, [center], 'euclidean').flatten()
+        distances = cdist( [center], samples, 'euclidean').flatten()
         return np.max(distances)
 
     def compute_radius_min(self, center, samples):
         # 计算中心点到所有样本的距离
-        distances = cdist(samples, [center], 'euclidean').flatten()
+        distances = cdist( [center], samples, 'euclidean').flatten()
         # 取最小距离作为半径
         return np.min(distances)
 
     def compute_radius_mid(self, center, class_samples, dif_class_samples):
         # 计算异类样本的最小距离
         distances_min = self.compute_radius_min(center, dif_class_samples)
-        # 计算同类样本的最大距离
-        distances_max = self.compute_radius_max(center, class_samples)
+        # 计算同类样本的距离
+        distances = cdist([center], class_samples, 'euclidean').flatten()
+        distances_max = np.max([x for x in distances
+                                if x < distances_min])
 
         # 如果没有异类样本，使用同类样本的最大距离
-        if np.isinf(distances_min):
+        if len(dif_class_samples) <= 0:
             return distances_max
         # 如果只剩下一个点不在覆盖集中，使用该点的模长
         elif len(class_samples) == 1:
