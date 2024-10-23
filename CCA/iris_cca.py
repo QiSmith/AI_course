@@ -10,7 +10,7 @@ X, y = iris.data, iris.target
 
 # Min-Max归一化
 scaler = MinMaxScaler(feature_range=(0.01, 0.99))
-scaler_data = scaler.fit_transform(X)
+X = scaler.fit_transform(X)
 
 cca_model = CCA()
 kf = KFold(n_splits=10, random_state=42, shuffle=True)
@@ -48,7 +48,7 @@ num_unknown_total = [x / 10 for x in num_unknown_total]
 
 
 print(f"可识别样本数: {num_known_total[0]},可识别样本的正确数: {num_known_total[1]},可识别样本正确率: {num_known_total[1]/num_known_total[0]}")
-print(f"不可识别样本数: {num_unknown_total[0]},不可识别样本的正确数: {num_unknown_total[1]},不可识别样本正确率: {num_unknown_total[1]/num_unknown_total[0]}")
+# print(f"不可识别样本数: {num_unknown_total[0]},不可识别样本的正确数: {num_unknown_total[1]},不可识别样本正确率: {num_unknown_total[1]/num_unknown_total[0]}")
 
 # cca_model = CCA()
 # kf = KFold(n_splits=10, random_state=42, shuffle=True)

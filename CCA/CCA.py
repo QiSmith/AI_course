@@ -21,24 +21,27 @@ class CCA:
             dif_class_samples = X[y != cls]
 
             # 检查是否有未被覆盖的同类样本
-            uncovered_class_samples = [sample for sample in class_samples
-                                       if not self.is_covered(sample, dif_class_samples)]
+            uncovered_class_samples = class_samples.copy()
 
-            if len(uncovered_class_samples) > 0:
+            while len(uncovered_class_samples) > 0:
+
                 # 随机选择一个未被覆盖的样本作为覆盖中心
                 center = self.select_center(uncovered_class_samples)
 
                 radius = self.compute_radius_mid(center, [center], dif_class_samples)
                 self.covers.append((center, radius, cls))
+                # 检查是否有未被覆盖的同类样本
+                uncovered_class_samples = [sample for sample in class_samples
+                                           if not self.is_covered(sample)]
 
     # 随机选择覆盖中心
     def select_center(self, class_samples):
         # 随机选择一个样本作为覆盖中心
         indices = np.random.choice(len(class_samples), size=1, replace=False)
-        print(indices[0])
+
         return class_samples[indices[0]]
 
-    def is_covered(self, center, dif_class_samples):
+    def is_covered(self, center):
         # 检查中心点是否被任何覆盖集覆盖
         for cover in self.covers:
             distance = np.linalg.norm(center - cover[0])
