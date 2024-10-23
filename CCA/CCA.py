@@ -5,7 +5,7 @@ import numpy as np
 class CCA:
     def __init__(self,radius=None):
         self.radius = radius
-        self.covers = []
+        self.covers = []    # center, radius, class
         self.X_train = []
         self.y_train = []
         self.classes = []
@@ -13,36 +13,38 @@ class CCA:
         self.num_known = [0, 0]
 
     def fit(self, X, y):
-        self.X_train = X
-        self.y_train = y
-        self.classes = np.unique(y) # 标签
-        self.covers = []    # center, radius, class
+        self.classes = np.unique(y)
+        self.covers = []
 
         for cls in self.classes:
-            class_mask = (y == cls)
-            class_samples = X[class_mask]   # 选择出所有cls类别的样本
-            dif_class_samples = X[y != cls]   # 选择出所有非cls类别的样本
-            if len(class_samples) > 0:
-                cover_centers = self.select_centers(class_samples)
-                for center in cover_centers:
-                    radius = self.compute_radius_mid(center,class_samples, dif_class_samples)
-                    # radius = self.compute_radius_max(center,class_samples)
-                    # radius = self.compute_radius_min(center,class_samples)
-                    self.covers.append((center, radius, cls))
+            class_samples = X[y == cls]
+            dif_class_samples = X[y != cls]
+
+            # 检查是否有未被覆盖的同类样本
+            uncovered_class_samples = [sample for sample in class_samples
+                                       if not self.is_covered(sample, dif_class_samples)]
+
+            if len(uncovered_class_samples) > 0:
+                # 随机选择一个未被覆盖的样本作为覆盖中心
+                center = self.select_center(uncovered_class_samples)
+
+                radius = self.compute_radius_mid(center, [center], dif_class_samples)
+                self.covers.append((center, radius, cls))
 
     # 随机选择覆盖中心
-    def select_centers(self, class_samples):
-        uncovered_samples = []
-        for sample in class_samples:
-            covered = False
-            for center,radius,cls in self.covers:
-                if(np.linalg.norm(sample - center) <= radius):
-                    covered = True
-                    break
-            if not covered:
-                uncovered_samples.append(sample)
-        indices = np.random.choice(len(uncovered_samples), size=5, replace=False)
-        return class_samples[indices]
+    def select_center(self, class_samples):
+        # 随机选择一个样本作为覆盖中心
+        indices = np.random.choice(len(class_samples), size=1, replace=False)
+        print(indices[0])
+        return class_samples[indices[0]]
+
+    def is_covered(self, center, dif_class_samples):
+        # 检查中心点是否被任何覆盖集覆盖
+        for cover in self.covers:
+            distance = np.linalg.norm(center - cover[0])
+            if distance <= cover[1]:
+                return True
+        return False
 
     # 计算半径，这里简化为最大距离到中心的距离
     def compute_radius_max(self, center, samples):
@@ -56,14 +58,19 @@ class CCA:
         return np.min(distances)
 
     def compute_radius_mid(self, center, class_samples, dif_class_samples):
-        # 找到异类样本的最小值 d1
+        # 计算异类样本的最小距离
         distances_min = self.compute_radius_min(center, dif_class_samples)
-        # 所有同类样本的距离
-        distances = cdist(class_samples, [center], 'euclidean').flatten()
-        # 在所有同类样本中，找到所有距离小于d1的样本，从中选取距离最大的
-        distances_max = np.max(distances[distances <= distances_min])
+        # 计算同类样本的最大距离
+        distances_max = self.compute_radius_max(center, class_samples)
 
-        return (distances_max + distances_min) / 2
+        # 如果没有异类样本，使用同类样本的最大距离
+        if np.isinf(distances_min):
+            return distances_max
+        # 如果只剩下一个点不在覆盖集中，使用该点的模长
+        elif len(class_samples) == 1:
+            return np.linalg.norm(class_samples)
+        else:
+            return (distances_max + distances_min) / 2
 
     def predict(self, X, y_true):
         predictions = []
