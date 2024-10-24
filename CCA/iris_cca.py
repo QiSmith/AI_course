@@ -1,5 +1,4 @@
-from Cython import ccall
-from sklearn.model_selection import KFold, cross_val_score
+from sklearn.model_selection import KFold
 from sklearn.preprocessing import MinMaxScaler
 from sklearn import datasets
 
@@ -10,7 +9,7 @@ X, y = iris.data, iris.target
 
 # Min-Max归一化
 scaler = MinMaxScaler(feature_range=(0.01, 0.99))
-# X = scaler.fit_transform(X)
+X = scaler.fit_transform(X)
 
 cca_model = CCA()
 kf = KFold(n_splits=10, random_state=42, shuffle=True)
