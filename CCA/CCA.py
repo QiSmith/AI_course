@@ -1,5 +1,5 @@
 from scipy.spatial.distance import cdist
-
+from scipy.spatial.distance import euclidean
 import numpy as np
 
 class CCA:
@@ -36,7 +36,7 @@ class CCA:
             uncovered_samples = [x for x in class_samples
                                  if x[-1] == 0]
 
-            while len(uncovered_samples) > 0:  # 检查是否有未被覆盖的同类样本
+            while uncovered_samples:  # 检查是否有未被覆盖的同类样本
                 # 随机选择一个未被覆盖的样本作为覆盖中心
                 center = self.select_center(uncovered_samples)
                 radius = self.compute_radius_mid(center[:-1], class_samples[:,:-1], dif_class_samples[:,:-1])
@@ -44,8 +44,8 @@ class CCA:
 
                 num = 0
                 covered_samples=[]
-                for x in uncovered_samples:
-                    if x[-1] == 0 and np.linalg.norm(x[:-1] - center[:-1]) < radius:
+                for x in uncovered_samples.copy():
+                    if x[-1] == 0 and euclidean(x[:-1], center[:-1]) <= radius:
                         num += 1
                         x[-1] = 1
                         covered_samples.append(x[:-1])
@@ -53,7 +53,7 @@ class CCA:
                 # 更新覆盖集信息
                 cover = (center[:-1], radius, cls, num, covered_samples)
                 self.covers.append(cover)
-                print(f'覆盖样本集中心:{cover[0]},半径:{cover[1]},类别{cover[2]},覆盖集内样本数{cover[3]}')
+                # print(f'半径:{cover[1]},类别{cover[2]},覆盖集内样本数{cover[3]}')
                 uncovered_samples = [x for x in class_samples
                                      if x[-1] == 0]
 
@@ -64,43 +64,41 @@ class CCA:
 
     # 计算半径，这里简化为同类到中心的最大距离
     def compute_radius_max(self, center, samples):
-        distances = cdist( [center], samples, 'euclidean').flatten()
+        distances = cdist( [center], samples, 'euclidean')
         return np.max(distances)
 
     def compute_radius_min(self, center, samples):
         # 计算中心点到所有样本的距离
-        distances = cdist( [center], samples, 'euclidean').flatten()
+        distances = cdist( [center], samples, 'euclidean')
         # 取最小距离作为半径
         return np.min(distances)
 
     def compute_radius_mid(self, center, class_samples, dif_class_samples):
-        # 如果只剩下一个点不在覆盖集中，使用该点的模长
-        if class_samples.shape[0] == 1:
-            return np.linalg.norm(class_samples)
-        if dif_class_samples.shape[0] <= 0:
-            distances_min = np.inf
-        # 计算异类样本的最小距离
-        else:
-            distances = cdist([center], dif_class_samples, 'euclidean').flatten()
-            distances_min = np.min(distances)
+
+        distances = cdist([center], dif_class_samples, 'euclidean').flatten()
+        distances_min = np.min(distances)
 
         # 计算同类样本的距离
         distances = cdist([center], class_samples, 'euclidean').flatten()
-        distances_max = np.max([x for x in distances
-                                if x < distances_min])
+        distances = [x for x in distances
+                                if x < distances_min]
+        distances_max = np.max(distances)
+
         return (distances_max + distances_min) / 2
 
     def predict(self, X, y_true):
         predictions = []
-        covers = []
+        self.num_known = [0,0]
+        self.num_unknown = [0,0]
         for x, test_label in zip(X, y_true):
             # 存储每个覆盖集的距离和对应的类别
             distances_and_classes = []  # distance, class
             covered = False
+            covers = []
 
             for cover in self.covers:
                 # 使用欧氏距离计算样本到覆盖集中心点的距离
-                distance = np.linalg.norm(x - cover[0])
+                distance = euclidean(x,cover[0])
                 # 检查是否在覆盖集内部
                 if distance <= cover[1]:
                     distances_and_classes.append((distance, cover[2]))
@@ -129,8 +127,10 @@ class CCA:
                     # prediction = self.vote_predictions(distances_and_classes)
                     # predictions.append(prediction)
 
+                    # 使用距离最近方法
                     prediction = self.dist_center(X, covers)
                     predictions.append(prediction)
+
                     self.num_known[0] += 1
                     if prediction == test_label:
                         self.num_known[1] += 1
