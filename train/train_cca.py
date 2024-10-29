@@ -1,10 +1,11 @@
-
-from sklearn.preprocessing import MinMaxScaler
+from pyasn1_modules.rfc5990 import nistAlgorithm
+from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 from sklearn.model_selection import KFold
 from sklearn import datasets
 
 import concurrent.futures
 import pandas as pd
+import numpy as np
 import os
 
 from algorithm.CCA import CCA
@@ -27,7 +28,7 @@ def train_cca(data, path, num_train):
     ])
 
     # 定义处理单次十折交叉验证的函数
-    def process_single_fold(index):
+    for i in range(num_train):
         num_known_total = [0, 0]
         num_unknown_total = [0, 0]
         num_covers = 0
@@ -70,12 +71,6 @@ def train_cca(data, path, num_train):
         }
         return result
 
-    # 使用多线程执行100次十折交叉验证
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        futures = [executor.submit(process_single_fold, i) for i in range(num_train)]
-        for future in concurrent.futures.as_completed(futures):
-            result = future.result()
-            df = df.append(result, ignore_index=True)
 
     # 确保目录存在
     output_dir = '../result'
@@ -86,8 +81,31 @@ def train_cca(data, path, num_train):
     output_file = os.path.join(output_dir, path)
     df.to_excel(output_file, index=False, engine='openpyxl')
 
+# 定义一个函数来转换数据集中的布尔型和其他类别型特征
+def encode(X):
+    # 创建一个空列表来存储转换后的数据
+    encoded_X = []
+    # 遍历每一列
+    for i in range(X.shape[1]):
+        column = X[:, i]
+        # 检查是否为布尔型特征
+        if column.dtype == 'object' and set(column).issubset({'true', 'false'}):
+            # 使用条件表达式转换布尔型特征
+            encoded_column = [1 if val == 'true' else 0 for val in column]
+        elif column.dtype == 'object':
+            # 使用LabelEncoder转换类别型特征
+            from sklearn.preprocessing import LabelEncoder
+            le = LabelEncoder()
+            encoded_column = le.fit_transform(column)
+        else:
+            # 其他数值型特征保持不变
+            encoded_column = column
+        encoded_X.append(encoded_column)
+    # 将转换后的列组合成一个NumPy数组
+    return np.array(encoded_X).T
+
 if __name__ == '__main__':
-    path = 'wine_Mid_MinDistWithCenter.xlsx'
+    path = 'iris_Mid_MinDistWithCenter.xlsx'
 
     # 加载数据集iris
     # iris = datasets.load_iris()
@@ -97,5 +115,7 @@ if __name__ == '__main__':
 
     # 加载数据集zoo
     zoo = datasets.fetch_openml(name='zoo', version=1)
+    # zoo.data = encode(zoo.data)
 
-    train_cca(zoo, path, 100)
+    data = zoo
+    train_cca(data, path, 100)
