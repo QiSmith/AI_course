@@ -1,7 +1,6 @@
-from scipy.spatial.distance import cdist
-from scipy.spatial.distance import euclidean
+
 import numpy as np
-from CCA import CCA
+from algorithm.CCA import CCA
 
 class VCCA:
     def __init__(self, num_models=15):
@@ -16,7 +15,7 @@ class VCCA:
     def predict(self, X):
         predictions = []
         for x in X:
-            model_preds = [model.predict([x])[0] for model in self.cca_models]
+            model_preds = [model.predict([x], None, flag=True)[0] for model in self.cca_models]
             # 使用投票机制确定最终预测
             prediction = np.bincount(model_preds).argmax()
             predictions.append(prediction)

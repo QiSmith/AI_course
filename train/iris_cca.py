@@ -1,19 +1,17 @@
-from sklearn.model_selection import KFold
+
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import KFold
 from sklearn import datasets
-from CCA import CCA
+
+import concurrent.futures
 import pandas as pd
 import os
-import concurrent.futures  # 导入concurrent.futures模块
+
+from algorithm.CCA import CCA
 
 # 加载数据集iris
 iris = datasets.load_iris()
 X, y = iris.data, iris.target
-
-# 加载数据集 glass
-# glass = datasets.fetch_openml(data_id=41)
-# X, y = glass.data, glass.target
-
 
 # 数据归一化
 scaler = MinMaxScaler(feature_range=(0.01, 0.99))

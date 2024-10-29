@@ -86,54 +86,87 @@ class CCA:
 
         return (distances_max + distances_min) / 2
 
-    def predict(self, X, y_true):
+    def predict(self, X, y_true, flag=False):
         predictions = []
         self.num_known = [0,0]
         self.num_unknown = [0,0]
-        for x, test_label in zip(X, y_true):
-            # 存储每个覆盖集的距离和对应的类别
-            distances_and_classes = []  # distance, class
-            covered = False
-            covers = []
+        if not flag:
+            for x, test_label in zip(X, y_true):
+                # 存储每个覆盖集的距离和对应的类别
+                distances_and_classes = []  # distance, class
+                covered = False
+                covers = []
 
-            for cover in self.covers:
-                # 使用欧氏距离计算样本到覆盖集中心点的距离
-                distance = euclidean(x,cover[0])
-                # 检查是否在覆盖集内部
-                if distance <= cover[1]:
-                    distances_and_classes.append((distance, cover[2]))
-                    covered = True
-                    covers.append(cover)
+                for cover in self.covers:
+                    # 使用欧氏距离计算样本到覆盖集中心点的距离
+                    distance = euclidean(x, cover[0])
+                    # 检查是否在覆盖集内部
+                    if distance <= cover[1]:
+                        distances_and_classes.append((distance, cover[2]))
+                        covered = True
+                        covers.append(cover)
 
-            if not covered:
-                # 如果样本没有落入任何覆盖集，选择欧氏距离最近的覆盖集
-                nearest_cover_index = np.argmin([np.linalg.norm(x - cover[0]) for cover in self.covers])    # 距中心距离
-                # nearest_cover_index = np.argmin([np.linalg.norm(x - cover[0]) - cover[1] for cover in self.covers])    # 距边界距离
-                nearest_cover = self.covers[nearest_cover_index]
-                predictions.append(nearest_cover[2])
+                if not covered:
+                    # 如果样本没有落入任何覆盖集，选择欧氏距离最近的覆盖集
+                    nearest_cover_index = np.argmin([np.linalg.norm(x - cover[0]) for cover in self.covers])  # 距中心距离
+                    # nearest_cover_index = np.argmin([np.linalg.norm(x - cover[0]) - cover[1] for cover in self.covers])    # 距边界距离
+                    nearest_cover = self.covers[nearest_cover_index]
+                    predictions.append(nearest_cover[2])
 
-                self.num_unknown[0] += 1
-                if nearest_cover[2] == test_label:
-                    self.num_unknown[1] += 1
-            else:
-                if len(distances_and_classes) == 1:
-                    # 如果只有一个覆盖集，直接选择该覆盖集的类别
-                    predictions.append(distances_and_classes[0][1])
-                    self.num_known[0] += 1
-                    if distances_and_classes[0][1] == test_label:
-                        self.num_known[1] += 1
+                    self.num_unknown[0] += 1
+                    if nearest_cover[2] == test_label:
+                        self.num_unknown[1] += 1
                 else:
-                    # # 使用投票方法
-                    # prediction = self.vote_predictions(distances_and_classes)
-                    # predictions.append(prediction)
+                    if len(distances_and_classes) == 1:
+                        # 如果只有一个覆盖集，直接选择该覆盖集的类别
+                        predictions.append(distances_and_classes[0][1])
+                        self.num_known[0] += 1
+                        if distances_and_classes[0][1] == test_label:
+                            self.num_known[1] += 1
+                    else:
+                        # # 使用投票方法
+                        # prediction = self.vote_predictions(distances_and_classes)
+                        # predictions.append(prediction)
 
-                    # 使用距离最近方法
-                    prediction = self.dist_center(X, covers)
-                    predictions.append(prediction)
+                        # 使用距离最近方法
+                        prediction = self.dist_center(X, covers)
+                        predictions.append(prediction)
 
-                    self.num_known[0] += 1
-                    if prediction == test_label:
-                        self.num_known[1] += 1
+                        self.num_known[0] += 1
+                        if prediction == test_label:
+                            self.num_known[1] += 1
+        else:
+            for x in X:
+                # 存储每个覆盖集的距离和对应的类别
+                distances_and_classes = []  # distance, class
+                covered = False
+                covers = []
+
+                for cover in self.covers:
+                    # 使用欧氏距离计算样本到覆盖集中心点的距离
+                    distance = euclidean(x, cover[0])
+                    # 检查是否在覆盖集内部
+                    if distance <= cover[1]:
+                        distances_and_classes.append((distance, cover[2]))
+                        covered = True
+                        covers.append(cover)
+
+                if not covered:
+                    # 如果样本没有落入任何覆盖集，选择欧氏距离最近的覆盖集
+                    nearest_cover_index = np.argmin([np.linalg.norm(x - cover[0]) for cover in self.covers])  # 距中心距离
+                    # nearest_cover_index = np.argmin([np.linalg.norm(x - cover[0]) - cover[1] for cover in self.covers])    # 距边界距离
+                    nearest_cover = self.covers[nearest_cover_index]
+                    predictions.append(nearest_cover[2])
+
+                else:
+                    if len(distances_and_classes) == 1:
+                        # 如果只有一个覆盖集，直接选择该覆盖集的类别
+                        predictions.append(distances_and_classes[0][1])
+                    else:
+                        # 使用距离最近方法
+                        prediction = self.dist_center(X, covers)
+                        predictions.append(prediction)
+
         return np.array(predictions)
 
     # 距中心最近

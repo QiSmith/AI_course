@@ -1,19 +1,17 @@
-import concurrent.futures
 
-from sklearn.model_selection import KFold
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import KFold
 from sklearn import datasets
-from CCA import CCA
+
+import concurrent.futures
 import pandas as pd
 import os
 
-# 加载数据集
-glass = datasets.fetch_openml(data_id=41)
-# 将数据转换为 pandas DataFrame
-df_glass = pd.DataFrame(glass.data, columns=glass.feature_names)
-df_glass['target'] = glass.target
+from algorithm.CCA import CCA
 
-X, y = glass.data, glass.target
+# 加载数据集iris
+wine = datasets.load_wine()
+X, y = wine.data, wine.target
 
 # 数据归一化
 scaler = MinMaxScaler(feature_range=(0.01, 0.99))
@@ -73,9 +71,10 @@ def process_single_fold(index):
     }
     return result
 
+
 # 使用多线程执行100次十折交叉验证
 with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-    futures = [executor.submit(process_single_fold, i) for i in range(10)]
+    futures = [executor.submit(process_single_fold, i) for i in range(100)]
     for future in concurrent.futures.as_completed(futures):
         result = future.result()
         df = df.append(result, ignore_index=True)
@@ -86,5 +85,5 @@ if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
 # 将DataFrame写入Excel文件
-output_file = os.path.join(output_dir, 'glass_VCCA_BaseOnCCA.xlsx')
+output_file = os.path.join(output_dir, 'wine_Mid_MinDistWithCenter.xlsx')
 df.to_excel(output_file, index=False, engine='openpyxl')
