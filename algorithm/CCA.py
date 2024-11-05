@@ -78,11 +78,19 @@ class CCA:
         distances = cdist([center], dif_class_samples, 'euclidean').flatten()
         distances_min = np.min(distances)
 
-        # 计算同类样本的距离
-        distances = cdist([center], class_samples, 'euclidean').flatten()
-        distances = [x for x in distances
-                                if x < distances_min]
-        distances_max = np.max(distances)
+        if len(class_samples) > 0:
+            # 计算同类样本的距离
+            distances = cdist([center], class_samples, 'euclidean').flatten()
+            distances = [x for x in distances
+                         if x < distances_min]
+            if distances:
+                distances_max = np.max(distances)
+            else:
+                distances_max = np.linalg.norm(center)
+                distances_min = 0
+        else:
+            distances_max = np.linalg.norm(center)
+            distances_min = 0
 
         return (distances_max + distances_min) / 2
 

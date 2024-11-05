@@ -1,18 +1,20 @@
-from pyasn1_modules.rfc5990 import nistAlgorithm
+
 from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 from sklearn.model_selection import KFold
 from sklearn import datasets
 
-import concurrent.futures
 import pandas as pd
 import numpy as np
+import time
 import os
+
+from ucimlrepo import fetch_ucirepo
 
 from algorithm.CCA import CCA
 
-def train_cca(data, path, num_train):
+def train_cca(X, y, path, num_train):
 
-    X, y = data.data, data.target
+    # X, y = data.data, data.target
 
     # 数据归一化
     scaler = MinMaxScaler(feature_range=(0.01, 0.99))
@@ -58,6 +60,7 @@ def train_cca(data, path, num_train):
         num_covers /= 10
         average_score = sum(fold_scores) / len(fold_scores)
 
+        print(f"num_epoch：{i}")
         # 创建结果字典
         result = {
             '平均覆盖集个数': num_covers,
@@ -69,9 +72,13 @@ def train_cca(data, path, num_train):
             '不可识别样本的正确率': num_unknown_total[1] / num_unknown_total[0],
             '总正确率': average_score,
         }
-        return result
 
+        # 将字典转换为DataFrame
+        result_df = pd.DataFrame([result])
 
+        # 追加到原始DataFrame中
+        df = df.append(result_df, ignore_index=True)
+    std_dev = df['总正确率'].std()
     # 确保目录存在
     output_dir = '../result'
     if not os.path.exists(output_dir):
@@ -80,42 +87,113 @@ def train_cca(data, path, num_train):
     # 将DataFrame写入Excel文件
     output_file = os.path.join(output_dir, path)
     df.to_excel(output_file, index=False, engine='openpyxl')
+    print(std_dev)
 
-# 定义一个函数来转换数据集中的布尔型和其他类别型特征
-def encode(X):
-    # 创建一个空列表来存储转换后的数据
-    encoded_X = []
-    # 遍历每一列
-    for i in range(X.shape[1]):
-        column = X[:, i]
-        # 检查是否为布尔型特征
-        if column.dtype == 'object' and set(column).issubset({'true', 'false'}):
-            # 使用条件表达式转换布尔型特征
-            encoded_column = [1 if val == 'true' else 0 for val in column]
-        elif column.dtype == 'object':
-            # 使用LabelEncoder转换类别型特征
-            from sklearn.preprocessing import LabelEncoder
-            le = LabelEncoder()
-            encoded_column = le.fit_transform(column)
-        else:
-            # 其他数值型特征保持不变
-            encoded_column = column
-        encoded_X.append(encoded_column)
-    # 将转换后的列组合成一个NumPy数组
-    return np.array(encoded_X).T
+def iris_train():
+    path = 'Iris_CCA.xlsx'
+    # iris 数据集
+    iris = datasets.load_iris()
+    X = iris.data   # numpy.ndarray
+    y = iris.target
+
+    train_cca(X, y, path, 10)
+
+
+def fertilizer_train():
+    path = 'Fertilizer_CCA.xlsx'
+    # fetch dataset
+    fertility = fetch_ucirepo(id=244)
+
+    # data (as pandas dataframes)
+    X = fertility.data.features
+    y = fertility.data.targets
+    X = X.to_numpy()
+    y = y.to_numpy().flatten()
+
+    # 初始化 LabelEncoder
+    le = LabelEncoder()
+    y = le.fit_transform(y)
+
+    # print(y.shape,y)
+    train_cca(X, y, path, 20)
+
+def breast_can_train():
+    path = 'Breast_can_CCA.xlsx'
+    # fetch dataset
+    breast_cancer = fetch_ucirepo(id=14)
+
+    # data (as pandas dataframes)
+    X = breast_cancer.data.features
+    y = breast_cancer.data.targets
+    X = X.to_numpy()
+    y = y.to_numpy().flatten()
+
+    # 初始化 LabelEncoder
+    le = LabelEncoder()
+    y = le.fit_transform(y)
+    # 对每一列进行标签编码，同时保持数组形状不变
+    encoded_X = np.empty_like(X)  # 创建一个与X形状相同的空数组
+    for i in range(X.shape[1]):  # 遍历每一列
+        encoded_X[:, i] = le.fit_transform(X[:, i])  # 对每一列进行标签编码
+
+    train_cca(encoded_X, y, path, 10)
+
+def haberman_train():
+    path = 'Haberman_CCA.xlsx'
+    # fetch dataset
+    haberman_s_survival = fetch_ucirepo(id=43)
+
+    # data (as pandas dataframes)
+    X = haberman_s_survival.data.features
+    y = haberman_s_survival.data.targets
+    X = X.to_numpy()
+    y = y.to_numpy().flatten()
+
+    # 初始化 LabelEncoder
+    # le = LabelEncoder()
+    # y = le.fit_transform(y)
+
+    train_cca(X, y, path, 20)
+
+def Ionosphere_train():
+    path = 'Ionosphere_CCA.xlsx'
+
+    # fetch dataset
+    ionosphere = fetch_ucirepo(id=52)
+
+    # data (as pandas dataframes)
+    X = ionosphere.data.features
+    y = ionosphere.data.targets
+    X = X.to_numpy()
+    y = y.to_numpy().flatten()
+
+    # 初始化 LabelEncoder
+    le = LabelEncoder()
+    y = le.fit_transform(y)
+
+    train_cca(X, y, path, 20)
+
+def Lymphography_train():
+    path = 'Lymphography_CCA.xlsx'
+    # fetch dataset
+    lymphography = fetch_ucirepo(id=63)
+
+    # data (as pandas dataframes)
+    X = lymphography.data.features
+    y = lymphography.data.targets
+    X = X.to_numpy()
+    y = y.to_numpy().flatten()
+
+    # 删除第19列，因为全是NaN
+    X = np.delete(X, 18, axis=1)
+
+    train_cca(X, y, path, 20)
+
 
 if __name__ == '__main__':
-    path = 'iris_Mid_MinDistWithCenter.xlsx'
-
-    # 加载数据集iris
-    # iris = datasets.load_iris()
-
-    # 加载数据集wine
-    # wine = datasets.load_wine()
-
-    # 加载数据集zoo
-    zoo = datasets.fetch_openml(name='zoo', version=1)
-    # zoo.data = encode(zoo.data)
-
-    data = zoo
-    train_cca(data, path, 100)
+    # fertilizer_train()
+    # breast_can_train()
+    # haberman_train()
+    # iris_train()
+    # Ionosphere_train()
+    Lymphography_train()
