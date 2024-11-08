@@ -4,9 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe020169-3169-46d7-b937-428c1a29c060" name="更改" comment="fit need to be fixed">
+    <list default="true" id="fe020169-3169-46d7-b937-428c1a29c060" name="更改" comment="CCA、VCCA均完成">
+      <change afterPath="$PROJECT_DIR$/algorithm/nCCA.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/algorithm/train_VCCA_n.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/train/train_ncca.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CCA/CCA.py" beforeDir="false" afterPath="$PROJECT_DIR$/CCA/CCA.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithm/CCA.py" beforeDir="false" afterPath="$PROJECT_DIR$/algorithm/CCA.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithm/VCCA.py" beforeDir="false" afterPath="$PROJECT_DIR$/algorithm/VCCA.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithm/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/algorithm/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/BCW_VCCA.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/glass_vcca.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/testr.py" beforeDir="false" afterPath="$PROJECT_DIR$/train/testr.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/train_VCCA.py" beforeDir="false" afterPath="$PROJECT_DIR$/train/train_VCCA.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/train_cca.py" beforeDir="false" afterPath="$PROJECT_DIR$/train/train_cca.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +42,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -49,6 +64,9 @@
     &quot;accountId&quot;: &quot;dd1c939d-1158-4d50-b67d-2898acfa5ff4&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -59,31 +77,169 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.CCA.executor&quot;: &quot;Run&quot;,
-    &quot;Python.data_clean.executor&quot;: &quot;Run&quot;,
-    &quot;Python.data_clean_iris.executor&quot;: &quot;Run&quot;,
-    &quot;Python.iris_cca.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/pycharmproject/AI/dataset/iris&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.BCW_VCCA.executor": "Run",
+    "Python.CCA.executor": "Debug",
+    "Python.data_clean.executor": "Run",
+    "Python.data_clean_iris.executor": "Run",
+    "Python.glass_vcca (1).executor": "Run",
+    "Python.glass_vcca.executor": "Run",
+    "Python.iris_cca.executor": "Run",
+    "Python.test.executor": "Run",
+    "Python.testr (1).executor": "Run",
+    "Python.testr.executor": "Run",
+    "Python.train_VCCA.executor": "Run",
+    "Python.train_VCCA_n.executor": "Run",
+    "Python.train_cca.executor": "Run",
+    "Python.train_ncca.executor": "Run",
+    "Python.wine_cca.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "demo",
+    "last_opened_file_path": "E:/pycharmproject/AI",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\pycharmproject\AI\dataset\iris" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\pycharmproject\AI\train" />
       <recent name="E:\pycharmproject\AI\dataset" />
     </key>
+  </component>
+  <component name="RunManager" selected="Python.train_VCCA_n">
+    <configuration name="testr" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AI" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/train" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/train/testr.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="train_VCCA" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AI" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/train" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/train/train_VCCA.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="train_VCCA_n" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AI" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/algorithm" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/algorithm/train_VCCA_n.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="train_cca" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AI" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/train" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/train/train_cca.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="train_ncca" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AI" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/train" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/train/train_ncca.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.train_VCCA_n" />
+        <item itemvalue="Python.train_ncca" />
+        <item itemvalue="Python.train_cca" />
+        <item itemvalue="Python.train_VCCA" />
+        <item itemvalue="Python.testr" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -108,7 +264,23 @@
       <workItem from="1729407644849" duration="15000" />
       <workItem from="1729407903526" duration="89000" />
       <workItem from="1729408064999" duration="20165000" />
-      <workItem from="1729672892165" duration="3450000" />
+      <workItem from="1729672892165" duration="6230000" />
+      <workItem from="1729730295945" duration="3703000" />
+      <workItem from="1729738582745" duration="1105000" />
+      <workItem from="1729764575253" duration="9259000" />
+      <workItem from="1729818586554" duration="33000" />
+      <workItem from="1730127152067" duration="3526000" />
+      <workItem from="1730185494223" duration="15460000" />
+      <workItem from="1730378822425" duration="828000" />
+      <workItem from="1730422209475" duration="9000" />
+      <workItem from="1730525530087" duration="4571000" />
+      <workItem from="1730616817365" duration="15238000" />
+      <workItem from="1730773050236" duration="11073000" />
+      <workItem from="1730818048533" duration="39000" />
+      <workItem from="1730962523141" duration="9338000" />
+      <workItem from="1730976921564" duration="8409000" />
+      <workItem from="1730994461088" duration="942000" />
+      <workItem from="1731024901621" duration="9780000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -158,7 +330,63 @@
       <option name="project" value="LOCAL" />
       <updated>1729673176894</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="fit need to be fixed">
+      <option name="closed" value="true" />
+      <created>1729676569443</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1729676569443</updated>
+    </task>
+    <task id="LOCAL-00008" summary="weird！！ 0类覆盖集出问题">
+      <option name="closed" value="true" />
+      <created>1729687505304</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1729687505304</updated>
+    </task>
+    <task id="LOCAL-00009" summary="weird！！ 0类覆盖集出问题,修改了fit&#10;、predict，现在可以记录每个覆盖集的样本个数，记录样本是否已学习">
+      <option name="closed" value="true" />
+      <created>1729776078250</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1729776078250</updated>
+    </task>
+    <task id="LOCAL-00010" summary="weird！！ 0类覆盖集出问题,修改了fit&#10;、predict，现在可以记录每个覆盖集的样本个数，记录样本是否已学习">
+      <option name="closed" value="true" />
+      <created>1730208499538</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1730208499538</updated>
+    </task>
+    <task id="LOCAL-00011" summary="CCA、VCCA均完成">
+      <option name="closed" value="true" />
+      <created>1730213928701</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1730213928701</updated>
+    </task>
+    <task id="LOCAL-00012" summary="CCA、VCCA均完成">
+      <option name="closed" value="true" />
+      <created>1730215279255</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1730215279255</updated>
+    </task>
+    <task id="LOCAL-00013" summary="CCA、VCCA均完成">
+      <option name="closed" value="true" />
+      <created>1730817993522</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1730817993522</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -179,12 +407,27 @@
     <MESSAGE value="init" />
     <MESSAGE value="prepare dataset" />
     <MESSAGE value="fit need to be fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="fit need to be fixed" />
+    <MESSAGE value="fit仍需要修改" />
+    <MESSAGE value="weird！！ 0类覆盖集出问题" />
+    <MESSAGE value="weird！！ 0类覆盖集出问题,修改了fit&#10;、predict，现在可以记录每个覆盖集的样本个数，记录样本是否已学习" />
+    <MESSAGE value="CCA、VCCA均完成" />
+    <option name="LAST_COMMIT_MESSAGE" value="CCA、VCCA均完成" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/AI$iris_cca.coverage" NAME="iris_cca 覆盖结果" MODIFIED="1729676336788" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CCA" />
+    <SUITE FILE_PATH="coverage/AI$testr__1_.coverage" NAME="testr (1) 覆盖结果" MODIFIED="1730213371734" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/algorithm" />
     <SUITE FILE_PATH="coverage/AI$data_clean.coverage" NAME="data_clean 覆盖结果" MODIFIED="1729413098164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/AI$CCA.coverage" NAME="CCA 覆盖结果" MODIFIED="1729421001665" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CCA" />
+    <SUITE FILE_PATH="coverage/AI$CCA.coverage" NAME="CCA 覆盖结果" MODIFIED="1729773772135" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CCA" />
+    <SUITE FILE_PATH="coverage/AI$iris_cca.coverage" NAME="iris_cca 覆盖结果" MODIFIED="1730207672079" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CCA" />
+    <SUITE FILE_PATH="coverage/AI$train_ncca.coverage" NAME="train_ncca 覆盖结果" MODIFIED="1731035580385" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/train" />
+    <SUITE FILE_PATH="coverage/AI$glass_vcca__1_.coverage" NAME="glass_vcca (1) 覆盖结果" MODIFIED="1730210655871" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/train" />
+    <SUITE FILE_PATH="coverage/AI$BCW_VCCA.coverage" NAME="BCW_VCCA 覆盖结果" MODIFIED="1730212062116" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/train" />
+    <SUITE FILE_PATH="coverage/AI$glass_vcca.coverage" NAME="glass_vcca 覆盖结果" MODIFIED="1730207524021" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CCA" />
+    <SUITE FILE_PATH="coverage/AI$test.coverage" NAME="test 覆盖结果" MODIFIED="1730212837775" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/train" />
+    <SUITE FILE_PATH="coverage/AI$testr.coverage" NAME="testr 覆盖结果" MODIFIED="1730982376868" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/train" />
+    <SUITE FILE_PATH="coverage/AI$train_VCCA.coverage" NAME="train_VCCA 覆盖结果" MODIFIED="1731030404680" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/train" />
+    <SUITE FILE_PATH="coverage/AI$train_VCCA_n.coverage" NAME="train_VCCA_n 覆盖结果" MODIFIED="1731035868087" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/algorithm" />
     <SUITE FILE_PATH="coverage/AI$data_clean_iris.coverage" NAME="data_clean_iris 覆盖结果" MODIFIED="1729413869894" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/AI$train_cca.coverage" NAME="train_cca 覆盖结果" MODIFIED="1731031045659" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/train" />
+    <SUITE FILE_PATH="coverage/AI$wine_cca.coverage" NAME="wine_cca 覆盖结果" MODIFIED="1730212117442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/train" />
   </component>
 </project>
