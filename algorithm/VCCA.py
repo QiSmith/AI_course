@@ -1,6 +1,6 @@
 
 import numpy as np
-from algorithm.CCA import CCA
+from algorithm.nCCA import CCA
 
 class VCCA:
     def __init__(self, num_models=15):

@@ -1,20 +1,16 @@
 
-from sklearn import datasets
-from sklearn.datasets import fetch_openml, load_digits
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import OneHotEncoder, LabelEncoder
-from sklearn.utils import Bunch
+from matplotlib import pyplot as plt
+from sklearn.preprocessing import LabelEncoder
 from ucimlrepo import fetch_ucirepo
+import seaborn as sns
+
+import pandas as pd
 
 # 输出glass数据集的特征
-def data_describe(zoo, X, y):
-    # print(zoo)
-    # X = zoo.data
-    # y = zoo.target
-    # print(X,y)
-    # 创建DataFrame来查看特征
-    df_X = pd.DataFrame(X, columns=zoo.feature_names)
+def data_describe(X, y):
+    df_X = pd.DataFrame(X)
     df_y = pd.DataFrame(y, columns=['target'])
 
     # 查看数据集的前几行
@@ -46,23 +42,55 @@ def data_describe(zoo, X, y):
     print(df_X.nunique())
     print(df_y.nunique())
 
-    # 查看数据集的列名
-    print("\n数据集的列名:")
-    print(df_X.columns)
+    # # 如果数据集中包含分类变量，可以查看每个分类变量的值分布
+    # for column in df_X.select_dtypes(include=['object', 'category']).columns:
+    #     print(f"\n{column}的值分布:")
+    #     print(df_X[column].value_counts())
 
-    # 如果数据集中包含分类变量，可以查看每个分类变量的值分布
+    # # 检查异常值
+    # print("\n异常值检查（箱线图）:")
+    # plt.figure(figsize=(10, 8))
+    # sns.boxplot(data=df_X)
+    # plt.xticks(rotation=90)
+    # plt.show()
+    #
+    # # 数据分布
+    # print("\n数值型数据分布（直方图）:")
+    # plt.figure(figsize=(10, 8))
+    # sns.histplot(df_X, kde=True)
+    # plt.xticks(rotation=90)
+    # plt.show()
+    #
+    # # 相关性分析
+    # print("\n变量相关性（热图）:")
+    # plt.figure(figsize=(10, 8))
+    # corr = df_X.corr()
+    # sns.heatmap(corr, annot=True, cmap='coolwarm')
+    # plt.show()
+
+    # 数据一致性检查
+    print("\n数据一致性检查:")
     for column in df_X.select_dtypes(include=['object', 'category']).columns:
-        print(f"\n{column}的值分布:")
-        print(df_X[column].value_counts())
+        print(f"\n{column}的合法类别值检查:")
+        print(df_X[column].apply(lambda x: x in df_X[column].unique()))
 
-
-def car_train():
-    # car数据集，需要标签编码
-    car = fetch_openml(name='car', version=2)
-    X = car.data
-    y = car.target
-
-    data_describe(car,X, y)
+def one_hot_encode_non_numeric(df, flag=False):
+    """
+    对DataFrame中所有非数值列进行独热编码。
+    :param
+    df (DataFrame): 包含要编码列的DataFrame。
+    :return
+    DataFrame: 包含所有非数值列独热编码的新DataFrame。
+    """
+    if not flag:
+        # 选择非数值列
+        cols_to_encode = df.select_dtypes(exclude=['int64', 'float64']).columns
+    else:
+        # 如果flag=True，则选择所有列
+        cols_to_encode = df.columns
+    # 对指定列进行独热编码
+    df_encoded = pd.get_dummies(df, columns=cols_to_encode, drop_first=True)
+    return df_encoded
 
 def fertilizer_train():
     fertility = fetch_ucirepo(id=244)
@@ -72,7 +100,7 @@ def fertilizer_train():
     X = X.to_numpy()
     y = y.to_numpy().flatten()
 
-    data_describe(fertility,X, y)
+    data_describe(X, y)
 
 def haberman_train():
 
@@ -85,7 +113,7 @@ def haberman_train():
     X = X.to_numpy()
     y = y.to_numpy().flatten()
 
-    data_describe(haberman_s_survival,X, y)
+    data_describe(X, y)
 
 def Ionosphere_train():
     # fetch dataset
@@ -97,7 +125,10 @@ def Ionosphere_train():
     X = X.to_numpy()
     y = y.to_numpy().flatten()
 
-    data_describe(ionosphere,X, y)
+    le = LabelEncoder()
+    y = le.fit_transform(y)
+
+    data_describe(X, y)
 
 def Lymphography_train():
     # fetch dataset
@@ -109,7 +140,7 @@ def Lymphography_train():
     X = X.to_numpy()
     y = y.to_numpy().flatten()
 
-    data_describe(lymphography, X, y)
+    data_describe(X, y)
 
 def breast_can_train():
     # fetch dataset
@@ -126,14 +157,69 @@ def breast_can_train():
     y = le.fit_transform(y)
     X = np.array([le.fit_transform(X[:, i]) for i in range(X.shape[1])])
 
-    data_describe(breast_cancer, X, y)
+    data_describe(X, y)
+
+def ilpd_train():
+    # fetch dataset
+    ilpd_indian_liver_patient_dataset = fetch_ucirepo(id=225)
+
+    # data (as pandas dataframes)
+    X = ilpd_indian_liver_patient_dataset.data.features
+    y = ilpd_indian_liver_patient_dataset.data.targets
+
+    # 检查是否存在NaN值
+    if X.isnull().any().any() or y.isnull().any():
+        # 删除包含NaN的行
+        X = X.dropna()
+        y = y.loc[X.index]  # 确保y与X的行对应
+
+        # 如果y是一个DataFrame，也需要删除NaN值
+        if y.isnull().any().any():
+            y = y.dropna()
+
+    X = one_hot_encode_non_numeric(X)
+    X = X.to_numpy()
+    y = y.to_numpy().flatten()
+
+    # data_describe(X, y)
+
+def segmentation_train():
+    # fetch dataset
+    image_segmentation = fetch_ucirepo(id=50)
+
+    # data (as pandas dataframes)
+    X = image_segmentation.data.features
+    y = image_segmentation.data.targets
+
+    X = X.to_numpy()
+    y = y.to_numpy().flatten()
+
+    data_describe(X, y)
+
+def balance_train():
+    # fetch dataset
+    balance_scale = fetch_ucirepo(id=12)
+
+    # data (as pandas dataframes)
+    X = balance_scale.data.features
+    y = balance_scale.data.targets
+
+    X = one_hot_encode_non_numeric(X, flag=True)
+
+    X = X.to_numpy()
+    y = y.to_numpy().flatten()
+
+    le = LabelEncoder()
+    y = le.fit_transform(y)
+
+    data_describe(X, y)
 
 if __name__ == '__main__':
-    # 获取 Glass Identification 数据集
-    # glass = fetch_openml(data_id=41)
-
     # fertilizer_train()
     # haberman_train()
-    # Ionosphere_train()
+    Ionosphere_train()
     # Lymphography_train()
-    breast_can_train()
+    # breast_can_train()
+    # ilpd_train()
+    # segmentation_train()
+    # balance_train()

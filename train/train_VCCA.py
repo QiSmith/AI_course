@@ -23,52 +23,51 @@ def train_VCCA(X, y, path, num_epoch):
     # 数据归一化
     scaler = MinMaxScaler(feature_range=(0.01, 0.99))
     X = scaler.fit_transform(X)
-    # y = y.values
-
-    # 初始化CCA模型
-    vcca_model = VCCA()
 
     # 初始化用于记录每折分数的列表
     df = pd.DataFrame(columns=[
-        '正确率',
+        '正确率','平均正确率','标准差'
     ])
 
-    for i in range(num_epoch):
-        average_acc = 0
+    average_acc = 0
+    # 定义处理单次十折交叉验证的函数
+    for j in range(num_epoch):
+        fold_scores = []
+        # 初始化VCCA模型
+        vcca_model = VCCA()
 
-        # 定义处理单次十折交叉验证的函数
-        for j in range(15):
-            fold_scores = []
+        kf = KFold(n_splits=10, random_state=42, shuffle=True)
 
-            kf = KFold(n_splits=10, random_state=42, shuffle=True)
+        for train_index, test_index in kf.split(X):
+            X_train, X_test = X[train_index], X[test_index]
+            y_train, y_test = y[train_index], y[test_index]
 
-            for train_index, test_index in kf.split(X):
-                X_train, X_test = X[train_index], X[test_index]
-                y_train, y_test = y[train_index], y[test_index]
+            # VCCA训练、评估模型
+            vcca_model.fit(X_train, y_train)
+            score = vcca_model.score(X_test, y_test)
 
-                # VCCA训练、评估模型
-                vcca_model.fit(X_train, y_train)
-                score = vcca_model.score(X_test, y_test)
+            fold_scores.append(score)
 
-                fold_scores.append(score)
-
-            average_score = sum(fold_scores) / len(fold_scores)
-            average_acc += average_score
-            # print(average_acc)
-        print(f"num_epoch:{i}")
+        average_score = sum(fold_scores) / len(fold_scores)
+        average_acc += average_score*100
+        print(f"num_epoch:{j}")
 
         result={
-            '正确率':average_acc/15,
+            '正确率':average_score*100,
         }
         # 将字典转换为DataFrame
         result_df = pd.DataFrame([result])
 
         # 追加到原始DataFrame中
         df = df.append(result_df, ignore_index=True)
-        # print(df)
-
 
     std_dev = df['正确率'].std()
+    result={
+        '平均正确率':average_acc/num_epoch,
+        '标准差':std_dev
+    }
+    result_df = pd.DataFrame([result])
+    df = df.append(result_df, ignore_index=True)
 
     # 确保目录存在
     output_dir = '../result'
@@ -78,55 +77,28 @@ def train_VCCA(X, y, path, num_epoch):
     # 将DataFrame写入Excel文件
     output_file = os.path.join(output_dir, path)
     df.to_excel(output_file, index=False, engine='openpyxl')
-    print(f"标准差:{std_dev}")
 
     # 记录结束时间
     end_time = time.time()
-
-    # 计算执行时间
     execution_time = end_time - start_time
     print(f"程序执行时间：{execution_time} 秒")
 
 
-def label_encode_bunch(bunch):
-    # 将数据转换为 DataFrame
-    df = pd.DataFrame(bunch.data, columns=bunch.feature_names)
+def one_hot_encode_non_numeric(df):
+    """
+    对DataFrame中所有非数值列进行独热编码。
+    :param
+    df (DataFrame): 包含要编码列的DataFrame。
+    :return
+    DataFrame: 包含所有非数值列独热编码的新DataFrame。
+    """
 
-    # 识别非数值列（即分类数据）
-    categorical_cols = df.select_dtypes(include=['object', 'category']).columns
+    # 选择非数值列
+    cols_to_encode = df.select_dtypes(exclude=['int64', 'float64']).columns
 
-    # 初始化 LabelEncoder
-    le = LabelEncoder()
-
-    # 对每个分类列进行标签编码
-    for col in categorical_cols:
-        df[col] = le.fit_transform(df[col])
-
-    # 对目标变量进行标签编码
-    # 假设目标变量是 bunch.target，且它是一维数组
-    if isinstance(bunch.target, np.ndarray):
-        unique_classes = np.unique(bunch.target)
-        class_dict = {cls: idx for idx, cls in enumerate(unique_classes)}
-        bunch.target = np.array([class_dict[cls] for cls in bunch.target])
-    elif isinstance(bunch.target, pd.Series):
-        unique_classes = bunch.target.unique()
-        class_dict = {cls: idx for idx, cls in enumerate(unique_classes)}
-        bunch.target = bunch.target.map(class_dict).values
-
-    # 提取特征和目标变量
-    X_encoded = df.values
-    y_encoded = bunch.target
-
-    # 创建新的 Bunch 对象
-    new_bunch = Bunch(
-        data=X_encoded,
-        target=y_encoded,
-        feature_names=df.columns.tolist(),
-        target_names=[str(cls) for cls in sorted(set(y_encoded))],  # 更新目标名称为编码后的类别标签
-        DESCR=bunch.DESCR
-    )
-
-    return new_bunch
+    # 对指定列进行独热编码
+    df_encoded = pd.get_dummies(df, columns=cols_to_encode, drop_first=True)
+    return df_encoded
 
 def iris_train():
     path = 'Iris_VCCA.xlsx'
@@ -135,17 +107,7 @@ def iris_train():
     X = iris.data   # numpy.ndarray
     y = iris.target
 
-    train_VCCA(X, y, path, 1)
-
-def car_train():
-    path = 'Car_VCCA.xlsx'
-    # car数据集，需要标签编码
-    car = fetch_openml(name='car', version=2)
-    car_data = label_encode_bunch(car)
-    X = car_data.data
-    y = car_data.target
-
-    train_VCCA(X, y, path, 1)
+    train_VCCA(X, y, path, 20)
 
 def fertilizer_train():
     path = 'Fertilizer_VCCA.xlsx'
@@ -188,9 +150,13 @@ def Ionosphere_train():
     # fetch dataset
     ionosphere = fetch_ucirepo(id=52)
 
+
     # data (as pandas dataframes)
     X = ionosphere.data.features
     y = ionosphere.data.targets
+    # 第二列数据只有一个值
+    X = X.drop(X.columns[1],axis=1)
+
     X = X.to_numpy()
     y = y.to_numpy().flatten()
 
@@ -198,7 +164,7 @@ def Ionosphere_train():
     le = LabelEncoder()
     y = le.fit_transform(y)
 
-    train_VCCA(X, y, path, 20)
+    train_VCCA(X, y, path, 1)
 
 def Lymphography_train():
     path = 'Lymphography_VCCA.xlsx'
@@ -230,6 +196,7 @@ def breast_can_train():
     # 初始化 LabelEncoder
     le = LabelEncoder()
     y = le.fit_transform(y)
+
     # 对每一列进行标签编码，同时保持数组形状不变
     encoded_X = np.empty_like(X)  # 创建一个与X形状相同的空数组
     for i in range(X.shape[1]):  # 遍历每一列
@@ -237,11 +204,82 @@ def breast_can_train():
 
     train_VCCA(encoded_X, y, path, 10)
 
+# 存在nan
+def ilpd_train():
+    path = 'ILPD_VCCA.xlsx'
+    # fetch dataset
+    ilpd_indian_liver_patient_dataset = fetch_ucirepo(id=225)
+
+    # data (as pandas dataframes)
+    X = ilpd_indian_liver_patient_dataset.data.features
+    y = ilpd_indian_liver_patient_dataset.data.targets
+
+    # 检查是否存在NaN值
+    if X.isnull().any().any() or y.isnull().any():
+        # 删除包含NaN的行
+        X = X.dropna()
+        y = y.loc[X.index]  # 确保y与X的行对应
+
+        # 如果y是一个DataFrame，也需要删除NaN值
+        if y.isnull().any().any():
+            y = y.dropna()
+
+    X = one_hot_encode_non_numeric(X)
+
+    X = X.to_numpy()
+    y = y.to_numpy().flatten()
+
+    train_VCCA(X, y, path, 10)
+
+def segmentation_train():
+    path = 'Segmentation_VCCA.xlsx'
+    # fetch dataset
+    image_segmentation = fetch_ucirepo(id=50)
+
+    # data (as pandas dataframes)
+    X = image_segmentation.data.features
+    y = image_segmentation.data.targets
+
+    X = X.to_numpy()
+    y = y.to_numpy().flatten()
+
+    # 初始化 LabelEncoder
+    le = LabelEncoder()
+    y = le.fit_transform(y)
+
+    train_VCCA(X, y, path, 20)
+
+def balance_train():
+    path = 'balance_VCCA.xlsx'
+    # fetch dataset
+    balance_scale = fetch_ucirepo(id=12)
+
+    # data (as pandas dataframes)
+    X = balance_scale.data.features
+    y = balance_scale.data.targets
+
+    X = one_hot_encode_non_numeric(X)
+
+    X = X.to_numpy()
+    y = y.to_numpy().flatten()
+
+    le = LabelEncoder()
+    y = le.fit_transform(y)
+
+    train_VCCA(X, y, path, 1)
+
 if __name__ == '__main__':
+    # 属性编码用 X = one_hot_encode_non_numeric(X) 标签编码用
+    # 初始化 LabelEncoder
+    # le = LabelEncoder()
+    # y = le.fit_transform(y)
+
+    iris_train()
     # fertilizer_train()
-    # iris_train()
-    # car_train()
     # haberman_train()
     # Ionosphere_train()
     # Lymphography_train()
-    breast_can_train()
+    # breast_can_train()
+    # ilpd_train()
+    # segmentation_train()
+    # balance_train()

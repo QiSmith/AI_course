@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 import os
 
-from algorithm.CCA import CCA
+from algorithm.nCCA import CCA
 
 def train_cca(X, y, path, num_train):
 
@@ -76,19 +76,20 @@ def train_cca(X, y, path, num_train):
     std_dev = df['总正确率'].std()
     result={
         '平均正确率':acc/num_train,
-        '标准差':std_dev,
+        '标准差':std_dev/100,
     }
     result_df = pd.DataFrame([result])
     df = df.append(result_df, ignore_index=True)
 
     # 确保目录存在
-    output_dir = '../result'
+    output_dir = '../n-delete-result'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
     # 将DataFrame写入Excel文件
     output_file = os.path.join(output_dir, path)
     df.to_excel(output_file, index=False, engine='openpyxl')
+
 
 def one_hot_encode_non_numeric(df):
     """
@@ -107,7 +108,7 @@ def one_hot_encode_non_numeric(df):
     return df_encoded
 
 def iris_train():
-    path = 'Iris_CCA.xlsx'
+    path = 'Iris_NCCA.xlsx'
     # iris 数据集
     iris = datasets.load_iris()
     X = iris.data   # numpy.ndarray
@@ -116,7 +117,7 @@ def iris_train():
     train_cca(X, y, path, 100)
 
 def fertilizer_train():
-    path = 'Fertilizer_CCA.xlsx'
+    path = 'Fertilizer_NCCA.xlsx'
     # fetch dataset
     fertility = fetch_ucirepo(id=244)
 
@@ -134,7 +135,7 @@ def fertilizer_train():
     train_cca(X, y, path, 20)
 
 def breast_can_train():
-    path = 'Breast_can_CCA.xlsx'
+    path = 'Breast_can_NCCA.xlsx'
     # fetch dataset
     breast_cancer = fetch_ucirepo(id=14)
 
@@ -155,7 +156,7 @@ def breast_can_train():
     train_cca(encoded_X, y, path, 10)
 
 def haberman_train():
-    path = 'Haberman_CCA.xlsx'
+    path = 'Haberman_NCCA.xlsx'
     # fetch dataset
     haberman_s_survival = fetch_ucirepo(id=43)
 
@@ -172,7 +173,7 @@ def haberman_train():
     train_cca(X, y, path, 20)
 
 def Ionosphere_train():
-    path = 'Ionosphere_CCA.xlsx'
+    path = 'Ionosphere_NCCA.xlsx'
 
     # fetch dataset
     ionosphere = fetch_ucirepo(id=52)
@@ -193,7 +194,7 @@ def Ionosphere_train():
     train_cca(X, y, path, 20)
 
 def Lymphography_train():
-    path = 'Lymphography_CCA.xlsx'
+    path = 'Lymphography_NCCA.xlsx'
     # fetch dataset
     lymphography = fetch_ucirepo(id=63)
 
@@ -209,7 +210,7 @@ def Lymphography_train():
     train_cca(X, y, path, 20)
 
 def ilpd_train():
-    path = 'ILPD_CCA.xlsx'
+    path = 'ILPD_NCCA.xlsx'
     # fetch dataset
     ilpd_indian_liver_patient_dataset = fetch_ucirepo(id=225)
 
@@ -235,7 +236,7 @@ def ilpd_train():
     train_cca(X, y, path, 20)
 
 def segmentation_train():
-    path = 'Segmentation_CCA.xlsx'
+    path = 'Segmentation_NCCA.xlsx'
     # fetch dataset
     image_segmentation = fetch_ucirepo(id=50)
 
@@ -253,7 +254,7 @@ def segmentation_train():
     train_cca(X, y, path, 20)
 
 def balance_train():
-    path = 'balance_CCA.xlsx'
+    path = 'balance_NCCA.xlsx'
     # fetch dataset
     balance_scale = fetch_ucirepo(id=12)
 
@@ -268,8 +269,21 @@ def balance_train():
 
     train_cca(X, y, path, 1)
 
+def bupa_train():
+    path = 'bupa_NCCA.xlsx'
+    # fetch dataset
+    liver_disorders = fetch_ucirepo(id=60)
+
+    # data (as pandas dataframes)
+    X = liver_disorders.data.features
+    y = liver_disorders.data.targets
+
+    X = X.to_numpy()
+    y = y.to_numpy().flatten()
+    train_cca(X, y, path, 10)
+
 def wine_train():
-    path = 'wine_CCA.xlsx'
+    path = 'wine_NCCA.xlsx'
     # fetch dataset
     wine = fetch_ucirepo(id=109)
 
@@ -282,21 +296,8 @@ def wine_train():
     y = y.to_numpy().flatten()
     train_cca(X, y, path, 10)
 
-def bupa_train():
-    path = 'bupa_CCA.xlsx'
-    # fetch dataset
-    liver_disorders = fetch_ucirepo(id=60)
-
-    # data (as pandas dataframes)
-    X = liver_disorders.data.features
-    y = liver_disorders.data.targets
-
-    X = X.to_numpy()
-    y = y.to_numpy().flatten()
-    train_cca(X, y, path, 10)
-
 def soybean_train():
-    path = 'soybean_CCA.xlsx'
+    path = 'soybean_NCCA.xlsx'
     # fetch dataset
     soybean_small = fetch_ucirepo(id=91)
 
@@ -311,13 +312,15 @@ def soybean_train():
 if __name__ == '__main__':
     # wine_train()
     # bupa_train()
-    soybean_train()
-    # fertilizer_train()
-    # breast_can_train()
-    # haberman_train()
+    # soybean_train()
+
     # iris_train()
-    # Ionosphere_train()
-    # Lymphography_train()
-    # ilpd_train()
-    # segmentation_train()
-    # balance_train()
+    fertilizer_train()
+    breast_can_train()
+    # haberman_train()
+    Ionosphere_train()
+    Lymphography_train()
+    ilpd_train()
+    segmentation_train()
+    balance_train()
+    pass

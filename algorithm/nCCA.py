@@ -41,11 +41,8 @@ class CCA:
             while len(uncovered_samples) > 0:  # 检查是否有未被覆盖的同类样本
                 # 随机选择一个未被覆盖的样本作为覆盖中心
                 center = self.select_center(uncovered_samples)
-                # 传入中心点、未学习过的同类样本点、未学习过的异类样本点、学习过的所有点
-                radius = self.compute_radius_mid(center[:-1], [sample[:-1] for sample in uncovered_samples],
-                                                 [sample[:-1] for sample in uncovered_dif_class_samples],
-                                                 np.array([x for x in X if x[-1] == 1])
-                                                 )
+                # 传入中心点、同类样本点、异类样本点
+                radius = self.compute_radius_mid(center[:-1], class_samples[:,:-1],dif_class_samples[:,:-1])
                 num = 0
                 covered_samples=[]
                 for x in uncovered_samples.copy():
@@ -83,28 +80,21 @@ class CCA:
         return np.min(distances)
 
     # 将学习过的样本删除掉，不纳入半径的考虑范围
-    def compute_radius_mid(self, center, class_samples, dif_class_samples, covered_samples):
-        # 没有异类点,把学习过的所有样本点当做异类点
-        if len(dif_class_samples) == 0:
-            distances = cdist([center], covered_samples,'euclidean').flatten()
-            distances_min = np.min(distances)
-        else:
-            distances = cdist([center], dif_class_samples, 'euclidean').flatten()
-            distances_min = np.min(distances)
+    def compute_radius_mid(self, center, class_samples, dif_class_samples):
 
-        # 有未学习过的同类点
-        if len(class_samples) > 0:
-            # 计算同类样本的距离
-            distances = cdist([center], class_samples, 'euclidean').flatten()
-            distances = [x for x in distances
-                         if x < distances_min]
+        # 一定存在异类样本点
+        distances = cdist([center], dif_class_samples, 'euclidean').flatten()
+        distances_min = np.min(distances)
 
-            # 如果距离存在 (有距离不存在的可能，此时覆盖只有中心点一个样本)
-            if distances:
-                distances_max = np.max(distances)
-            else:
-                distances_max = distances_min
-        # 没有未学习过的同类样本点
+
+        # 同样一定有同类样本点, 计算同类样本的距离
+        distances = cdist([center], class_samples, 'euclidean').flatten()
+        distances = [x for x in distances
+                     if x < distances_min]
+
+        # 如果距离存在 (有距离不存在的可能，此时覆盖只有中心点一个样本)
+        if distances:
+            distances_max = np.max(distances)
         else:
             distances_max = distances_min
 
